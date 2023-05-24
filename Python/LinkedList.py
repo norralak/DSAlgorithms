@@ -23,6 +23,20 @@ class linkedList:
     def isEmpty(self) -> bool:
         return self.head == None
     
+    def __repr__(self) -> str:
+        nodes = []
+        currentNode = self.head
+
+        while currentNode:
+            if currentNode is self.head:
+                nodes.append("[Head: %s]" % currentNode.data)
+            elif currentNode.nextNode is None:
+                nodes.append("[Tail: %s]" % currentNode.data)
+            else:
+                nodes.append("[%s]" % currentNode.data)
+            currentNode = currentNode.nextNode
+        return '-> '.join(nodes)
+    
     """
     Returns the number of node. Takes O(n) time since it goes thru the entirety of the list
     """
@@ -32,34 +46,80 @@ class linkedList:
         while currentNode:
             count += 1
             currentNode = currentNode.nextNode
-        
         return count
     
-    def prepend(self, newHead):
+    """
+    Adds new node to head O(1)
+    """
+    def prepend(self, data):
+        newHead = node(data)
         newHead.nextNode = self.head
         self.head = newHead
+    """
+    Searching is O(n)
+    """
+    def search(self, key):
+        currentNode = self.head
+
+        while currentNode:
+            if currentNode.data == key:
+                return currentNode
+            else:
+                currentNode = currentNode.nextNode
+        return None
+    """
+    Insertion is O(1) but searching is O(n)
+    """
+    def insert(self, data, index):
         
+        if index == 0:
+            self.prepend(data)
+        
+        if index > 0:
+            newNode = node(data)
 
-n1 = node("N")
-n2 = node("O")
-n3 = node("R")
-n4 = node("R")
-n5 = node("A")
-n6 = node("L")
-n7 = node("A")
-n8 = node("K")
-n1.nextNode = n2
-n2.nextNode = n3
-n3.nextNode = n4
-n4.nextNode = n5
-n5.nextNode = n6
-n6.nextNode = n7
-n7.nextNode = n8
+            position = index
+            currentNode = self.head
 
-n0 = "SUKARAM"
+            while position > 1:
+                currentNode = currentNode.nextNode
+                position -= 1
+            
+            prev = currentNode
+            next = currentNode.nextNode
+
+            prev.nextNode = newNode
+            newNode.nextNode = next
+
+    def delete(self, key):
+        found = False
+        prev = None
+        currentNode = self.head
+
+        while currentNode and not found:
+            if currentNode.data == key and currentNode is self.head:
+                found = True
+                self.head = currentNode.nextNode
+            elif currentNode.data == key:
+                found = True
+                prev.nextNode = currentNode.nextNode
+            else:
+                prev = currentNode
+                currentNode = currentNode.nextNode
+        
+        return currentNode
+
 myName = linkedList()
-myName.head = n1
+for char in "KALARRON":
+    myName.prepend(char)
+
 print(myName.size())
 print(myName.isEmpty())
+print(myName)
+myName.insert("THIS IS MY NAME", 8)
 
-myName.prepend(n0)
+nodey = myName.search("A")
+print(nodey)
+print(myName)
+myName.delete("THIS IS MY NAME")
+print(myName)
